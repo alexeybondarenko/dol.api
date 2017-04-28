@@ -450,7 +450,7 @@ post_types:
 
 + Request (application/json)
 + Response 200 (application/json)
-    + Attributes (Response_Collection)
+    + Attributes
         + data (array[`Type`], fixed-type)
 
 # Data Structures
@@ -546,16 +546,21 @@ post_types:
 + description: `Select score from 1 to 5`
 + type: `select` (string, required) - Type of the field
 + values (array, optional) - Items for select
-    + value: 1
-      name: 1
-    + value: 2
-      name: 2
-    + value: 3
-      name: 3
-    + value: 4
-      name: 4
-    + value: 5
-      name: 5
+    + (object)
+      + value: 1 (number)
+      + name: 1
+    + (object)
+      + value: 2 (number)
+      + name: 2
+    + (object)
+      + value: 3 (number)
+      + name: 3
+    + (object)
+      + value: 4 (number)
+      + name: 4
+    + (object)
+      + value: 5 (number)
+      + name: 5
 + required: true (boolean, optional)
 
 ### `Type`
