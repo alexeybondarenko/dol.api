@@ -1,1 +1,1 @@
-web: apiary preview --server
+web: apiary preview --server --port $PORT
