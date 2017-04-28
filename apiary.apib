@@ -585,10 +585,10 @@ post_types:
 ### `Post_Request`
 + type: `testimonial` (Post_Type, required) - Type of the post
 + fields (`Fields`, required) - Content of the post. Can be really different depends on the post type.
++ Include Content_SEO
 
 ### `Post_Response` (`Post_Request`)
 + id: `56c31536a60ad644060041af` (string, required) - ID of the post
-+ Include Content_SEO
 + created_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
 + updated_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
 
@@ -645,14 +645,3 @@ post_types:
 + slug: `my-first-post` (string, required) - ID of a Blog Post.
 + author: `tony` (string, required) - Any string that represents Blog Post author.
 + payload (array[Blog_Post_Payload])
-
-### `Blog_Post_Response` (`Blog_Post_Request`)
-+ Include `Content_Response`
-
-### `Blog_Post_Payload`
-+ locale: en_US (string, required) - Content locale.
-+ title: `My page title` (string, required)
-+ body: `Long blog post description` (string, required) - Blog Post body, visible only when fetched by ID.
-+ summary: `Shotened description` (string, required) - Shortened description that will be visible in list of blog posts.
-+ `feature_image`: `http://storage.google.com/mybucket/my_first_post.jpeg` (string, required) - Link to a CDN-hosted featre image.
-+ Include Content_SEO
