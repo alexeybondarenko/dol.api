@@ -377,7 +377,7 @@ post_types:
             + `theme/marketing` (string, required)
             + `reviewed_by_me` (string, required)
 
-## Post
+## Post [/posts]
 
 ### List Posts [GET /posts{?type,limit,starting_after,ending_before}]
 
@@ -393,17 +393,59 @@ post_types:
     + Attributes (Response_Collection)
         + data (array[`Post_Response`], fixed-type)
 
-### Create Post [PATCH /posts]
+### Get Post By ID [GET /posts/{id}/{?locale}]
 
 + Parameters
-    + id: 56c31536a60ad644060041af (string, required) - ID of the post
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+    + locale: `ru_RU` (string, required) - Locale name
+
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + data (`Post_Response`)
+
+### Create Post [POST /posts{?type}]
+
++ Parameters
     + type: `testimonial` (string, required) - Type of the creating post
 
 + Request (application/json)
     + Attributes (object)
         + post (`Post_Request`)
 
-## Types
++ Response 201 (application/json)
+
+        + Headers
+            Location: /posts/56c31536a60ad644060041aa
+
+    + Attributes (Response_OK)
+        + meta (Response__Meta)
+            + code: 201 (number)
+        + data (`Post_Response`)
+
+### Update Post [PUT /posts/{id}]
+
++ Parameters
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+
++ Request (application/json)
+    + Attributes (object)
+        + post (`Post_Request`)
+
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response__Meta)
+            + code: 201 (number)
+        + data (`Post_Response`)
+
+### Delete Post [DELETE /posts/{id}]
+
++ Parameters
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+
++ Request (application/json)
++ Response 204 (application/json)
+
+## Types [/types]
 
 ### List Types [GET /types]
 
@@ -521,7 +563,8 @@ post_types:
     + feedback: `Everything is Awesome!`
 
 ### `Post_Response` (`Post_Request`)
-+ searches
++ id: `56c31536a60ad644060041af` (string, required) - ID of the post
++ Include Content_Response
 
 ## Pages
 ### `Page_Request` (`Content_Request`)
@@ -540,6 +583,7 @@ post_types:
 + locale: en_US (string, required) - Content locale.
 + title: `Landing page` (string, required) - Name of a Page.
 + Include Content_SEO
++ Include Content_Response
 
 ### `Page_Block`
 + name: `testimonials` (string, required) - name of a content block.
