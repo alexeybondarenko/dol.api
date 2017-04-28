@@ -63,7 +63,7 @@ Example:
 
 ```
 post_types:
-  - testimonials:
+  - testimonial:
       name: Testimonials
       search:
         - name
@@ -95,7 +95,7 @@ post_types:
             description: eg. Describe about customer experience
             type: textarea
             required: true
-  - partners:
+  - partner:
       name: Partners
       search:
         - name
@@ -112,7 +112,7 @@ post_types:
             name: Text
             type: rich_text
             required: true
-  - faqs:
+  - faq:
       name: FAQs
       search:
         - question
@@ -125,7 +125,7 @@ post_types:
             name: Answer
             type: textarea
             required: true
-  - blogs:
+  - blog:
       name: Blog
       search:
         - title
@@ -540,11 +540,20 @@ post_types:
 
 ## Types
 
+### `Field`
++ name: `Rating` (string, required) - Name of the field. Can be used as a label of the input field.
++ key: `score` (string, required) - Field key
++ description: `Select score from 1 to 5`
++ type: `select` (string, required) - Type of the field
++ values (array, optional) - Items for select
++ required: true (boolean, optional)
+
 ### `Type`
 
-+ name (string, required) - PostType name. Must be unique.
-+ title (string, required) - Title of the PostType. Will be displayed in navigation.
++ name: `testimonial` (string, required) - Name. Must be unique.
++ title: `Testimonials` (string, required) - Title of the PostType. Will be displayed in navigation.
 + search: `name`,`score` (array[string], required) - List of fields to be displayed in posts list table
++ fields (array[Field], required)
 
 ## Posts
 
