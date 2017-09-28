@@ -3,7 +3,7 @@ HOST: http://polls.apiblueprint.org/
 
 # Dol - headless CMS
 
-Dol provides an JSON API and management UI for content management. 
+Dol provides an JSON API and management UI for content management.
 Dol is intented to be lightweight and easy to install.
 
 > "Dol" translates from the Sindarin as "Head". Sindarin is one of the many languages spoken by the immortal Elves.
@@ -28,8 +28,8 @@ Dol is intented to be lightweight and easy to install.
 ## Motivation
 
 Most of CMS systems are too heavy to be used as part of modern front-end solutions.
-Also it's hard to integrate custom front-ends into existing content management systems, 
-because they expect you to work with their metalanguages and dictate how you 
+Also it's hard to integrate custom front-ends into existing content management systems,
+because they expect you to work with their metalanguages and dictate how you
 structure, build, render and deploy your applications.
 
 Instead it's desirable to have simple JSON API and management UI.
@@ -37,6 +37,116 @@ Instead it's desirable to have simple JSON API and management UI.
 ## Friends and Competitors
 
 - [ButterCMS](https://buttercms.com/docs/api/?php#introduction)
+
+## Configurations
+
+Schema:
+
+```
+post_types: Array
+  - [post type]:
+      name: Name will be displayed in menu
+      search: Array of fields that can be displayed in list page
+        - [name of the field]: This field can be displayed in list page
+      fields: Array of fileds for this post type
+        - [field key]: Field key will be used as key of the object in public response.
+            name: Name of the field. Can be used as a label of the field in admin
+            description: description of the field. Can be used as placeholder or a caption of the field
+            type: Type of the field. (`string`, `textarea`, `rich_text`, `select`, `image`, etc.)
+            required: true/false
+            values: Array of allowed values for select field
+              - value: value of the item, eg. #00000
+                name: name of the value, eg. Black
+```
+
+Example:
+
+```
+post_types:
+  - testimonial:
+      name: Testimonials
+      search:
+        - name
+        - feedback
+      fields:
+        - rating:
+            name: Rating
+            description: Select one value from the list
+            type: select
+            required: true
+            values:
+              - value: 1
+                name: 1
+              - value: 2
+                name: 2
+              - value: 3
+                name: 3
+              - value: 4
+                name: 4
+              - value: 5
+                name: 5
+        - name:
+            name: Name
+            description: eg. John Smith
+            type: string
+            required: true
+        - feedback:
+            name: Feedback
+            description: eg. Describe about customer experience
+            type: textarea
+            required: true
+  - partner:
+      name: Partners
+      search:
+        - name
+      fields:
+        - name:
+            name: Name
+            type: string
+            required: true
+        - logo:
+            name: Logo
+            type: image
+            required: true
+        - text:
+            name: Text
+            type: rich_text
+            required: true
+  - faq:
+      name: FAQs
+      search:
+        - question
+      fields:
+        - question:
+            name: Question
+            type: string
+            required: true
+        - answer:
+            name: Answer
+            type: textarea
+            required: true
+  - blog:
+      name: Blog
+      search:
+        - title
+        - summary
+      fields:
+        - title:
+            name: Title
+            type: string
+            required: true
+        - summary:
+            name: Summary
+            type: textarea
+            required: true
+        - text:
+            name: Text
+            type: rich_text
+            required: true
+        - image:
+            name: Image
+            type: image
+```
 
 ## Static Pages [/pages]
 
@@ -267,6 +377,82 @@ Instead it's desirable to have simple JSON API and management UI.
             + `theme/marketing` (string, required)
             + `reviewed_by_me` (string, required)
 
+## Post [/posts]
+
+### List Posts [GET /posts{?type,limit,starting_after,ending_before}]
+
++ Parameters
+    + type (`Post_Type`, optional) - Filter posts by the type.
+    + limit: 20 (number, optional) - A limit on the number of objects to be returned, between 1 and 100. Default: 50.
+    + starting_after: 56c31536a60ad644060041af (string, optional) - A cursor to fetch next page. Taken from collection response.
+    + ending_before: 56c31536a60ad644060041aa (string, optional) - A cursor to fetch previous page. Taken from collection response.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + data (array[`Post_Response`], fixed-type)
+
+### Get Post By ID [GET /posts/{id}]
+
++ Parameters
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + data (`Post_Response`)
+
+### Create Post [POST /posts{?type}]
+
++ Parameters
+    + type: `testimonial` (string, required) - Type of the creating post
+
++ Request (application/json)
+    + Attributes (object)
+        + post (`Post_Request`)
+
++ Response 201 (application/json)
+
+        + Headers
+            Location: /posts/56c31536a60ad644060041aa
+
+    + Attributes (Response_OK)
+        + meta (Response__Meta)
+            + code: 201 (number)
+        + data (`Post_Response`)
+
+### Update Post [PUT /posts/{id}]
+
++ Parameters
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+
++ Request (application/json)
+    + Attributes (object)
+        + post (`Post_Request`)
+
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response__Meta)
+            + code: 201 (number)
+        + data (`Post_Response`)
+
+### Delete Post [DELETE /posts/{id}]
+
++ Parameters
+    + id: `56c31536a60ad644060041aa` (string, required) - Post ID
+
++ Request (application/json)
++ Response 204 (application/json)
+
+## Types [/types]
+
+### List Types [GET /types]
+
++ Request (application/json)
++ Response 200 (application/json)
+    + Attributes
+        + data (array[`Type`], fixed-type)
+
 # Data Structures
 ## Responses
 ### `Response_Collection`
@@ -341,8 +527,8 @@ Instead it's desirable to have simple JSON API and management UI.
 + seo (object, optional) - SEO-related information.
     + title: `My content title` (string, optional) - Page title for browsers and search engines.
     + `meta_description`: `This is an awesome page` (string, optional) - Page description that will be shown in search engines results.
-    + `meta_robots_noindex`: false (boolean, optional) 
-    + `meta_robots_nofollow`: false (boolean, optional) 
+    + `meta_robots_noindex`: false (boolean, optional)
+    + `meta_robots_nofollow`: false (boolean, optional)
     + `linkdex` (string, optional)
     + `opengraph_title` (string, optional)
     + `opengraph_description` (string, optional)
@@ -351,6 +537,60 @@ Instead it's desirable to have simple JSON API and management UI.
     + `twitter_description` (string, optional)
     + `twitter_image` (string, optional)
     + url: `http://example.com/` (string, optional) - Link to the user-facing page that will be used in sitemap generation.
+
+## Types
+
+### `Field`
++ name: `Rating` (string, required) - Name of the field. Can be used as a label of the input field.
++ key: `score` (string, required) - Field key
++ description: `Select score from 1 to 5`
++ type: `select` (string, required) - Type of the field
++ values (array, optional) - Items for select
+    + (object)
+      + value: 1 (number)
+      + name: 1
+    + (object)
+      + value: 2 (number)
+      + name: 2
+    + (object)
+      + value: 3 (number)
+      + name: 3
+    + (object)
+      + value: 4 (number)
+      + name: 4
+    + (object)
+      + value: 5 (number)
+      + name: 5
++ required: true (boolean, optional)
+
+### `Type`
+
++ name: `testimonial` (string, required) - Name. Must be unique.
++ title: `Testimonials` (string, required) - Title of the PostType. Will be displayed in navigation.
++ search: `name`,`score` (array[string], required) - List of fields to be displayed in posts list table
++ fields (array[Field], required)
+
+## Posts
+
+###  `Fields`
++ name: `John Smith` (string)
++ score: 1 (number)
++ feedback: `Everything is Awesome!` (string)
+
+### `Post_Type` (enum)
++ testimonial (string)
++ partner (string)
++ faq (string)
+
+### `Post_Request`
++ type: `testimonial` (Post_Type, required) - Type of the post
++ fields (`Fields`, required) - Content of the post. Can be really different depends on the post type.
++ Include Content_SEO
+
+### `Post_Response` (`Post_Request`)
++ id: `56c31536a60ad644060041af` (string, required) - ID of the post
++ created_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
++ updated_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone.
 
 ## Pages
 ### `Page_Request` (`Content_Request`)
@@ -368,7 +608,8 @@ Instead it's desirable to have simple JSON API and management UI.
 ### `Page_Payload`
 + locale: en_US (string, required) - Content locale.
 + title: `Landing page` (string, required) - Name of a Page.
-+ Include Content_SEO    
++ Include Content_SEO
++ Include Content_Response
 
 ### `Page_Block`
 + name: `testimonials` (string, required) - name of a content block.
@@ -404,14 +645,3 @@ Instead it's desirable to have simple JSON API and management UI.
 + slug: `my-first-post` (string, required) - ID of a Blog Post.
 + author: `tony` (string, required) - Any string that represents Blog Post author.
 + payload (array[Blog_Post_Payload])
-
-### `Blog_Post_Response` (`Blog_Post_Request`)
-+ Include `Content_Response`
-
-### `Blog_Post_Payload`
-+ locale: en_US (string, required) - Content locale.
-+ title: `My page title` (string, required)
-+ body: `Long blog post description` (string, required) - Blog Post body, visible only when fetched by ID.
-+ summary: `Shotened description` (string, required) - Shortened description that will be visible in list of blog posts.
-+ `feature_image`: `http://storage.google.com/mybucket/my_first_post.jpeg` (string, required) - Link to a CDN-hosted featre image.
-+ Include Content_SEO
